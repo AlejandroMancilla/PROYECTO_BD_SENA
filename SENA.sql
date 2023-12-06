@@ -82,10 +82,10 @@ INSERT INTO Clase_Aprendiz VALUES (1,1), (1,2), (1,5), (1,3), (2,4), (2,2), (2,5
 
 --CONSULTAS EN LA BASE DE DATOS--
 --Punto 4
-SELECT A.nombre, A.apellido, A.edad  FROM Aprendices A INNER JOIN Matricula M ON A.id_aprendiz=M.id_aprendiz WHERE M.id_ruta IN (SELECT id_ruta FROM Rutas WHERE id_carrera=2);
+SELECT CONCAT(A.nombre, ' ', A.apellido) AS APRENDIZ, A.edad  FROM Aprendices A INNER JOIN Matricula M ON A.id_aprendiz=M.id_aprendiz WHERE M.id_ruta IN (SELECT id_ruta FROM Rutas WHERE id_carrera=2);
 
 --Punto 5
-SELECT A.nombre, A.apellido, A.edad, R.ruta FROM Aprendices A JOIN Matricula M ON M.id_aprendiz=A.id_aprendiz JOIN Rutas R ON M.id_ruta=R.id_ruta WHERE M.estado='Cancelado';
+SELECT CONCAT(A.nombre, ' ', A.apellido) AS Aprendiz, A.edad, R.ruta AS Ruta_Cancelada FROM Aprendices A JOIN Matricula M ON M.id_aprendiz=A.id_aprendiz JOIN Rutas R ON M.id_ruta=R.id_ruta WHERE M.estado='Cancelado';
 
 --Punto 6
 SELECT R.ruta,C.curso FROM Cursos C INNER JOIN Cursos_Ruta CR ON C.id_curso=CR.id_curso INNER JOIN Rutas R on R.id_ruta=CR.id_ruta WHERE CR.id_instructor IS NULL;
@@ -101,3 +101,16 @@ SELECT CONCAT(A.nombre, ' ', A.apellido) AS Aprendiz FROM Aprendices A INNER JOI
 
 --Punto 10
 SELECT I.instructor AS Instructores_sin_Cursos FROM Instructores I LEFT JOIN Cursos_Ruta CR ON I.id_instructor=CR.id_instructor WHERE CR.id_instructor IS NULL;
+
+--Vista General de la Base de Datos
+DROP VIEW IF EXISTS Vista_General;
+CREATE VIEW Vista_General AS
+SELECT M.estado AS ESTADO, CONCAT(A.nombre, ' ', A.apellido) AS APRENDIZ, Car.name AS CARRERA, R.ruta AS RUTA, C.curso AS CURSO, I.instructor AS INSTRUCTOR
+FROM Matricula M 
+INNER JOIN Aprendices A ON M.id_aprendiz=A.id_aprendiz
+INNER JOIN Clase_Aprendiz Ca ON Ca.id_aprendiz=A.id_aprendiz
+INNER JOIN Cursos_Ruta Cr ON Cr.id_clase=Ca.id_clase
+INNER JOIN Rutas R ON R.id_ruta=Cr.id_ruta
+INNER JOIN Carrera Car ON Car.id=R.id_carrera
+INNER JOIN Cursos C ON C.id_curso=Cr.id_curso
+LEFT JOIN Instructores I ON I.id_instructor=Cr.id_instructor;

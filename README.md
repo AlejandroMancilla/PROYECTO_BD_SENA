@@ -103,6 +103,22 @@ INSERT INTO Clase_Aprendiz VALUES (1,1), (1,2), (1,5), (1,3), (2,4), (2,2), (2,5
 
 ```
 ---
+
+#### *Vista General de la Base de Datos*
+```sql
+DROP VIEW IF EXISTS Vista_General;
+CREATE VIEW Vista_General AS
+SELECT M.estado AS ESTADO, CONCAT(A.nombre, ' ', A.apellido) AS APRENDIZ, Car.name AS CARRERA, R.ruta AS RUTA, C.curso AS CURSO, I.instructor AS INSTRUCTOR
+FROM Matricula M 
+INNER JOIN Aprendices A ON M.id_aprendiz=A.id_aprendiz
+INNER JOIN Clase_Aprendiz Ca ON Ca.id_aprendiz=A.id_aprendiz
+INNER JOIN Cursos_Ruta Cr ON Cr.id_clase=Ca.id_clase
+INNER JOIN Rutas R ON R.id_ruta=Cr.id_ruta
+INNER JOIN Carrera Car ON Car.id=R.id_carrera
+INNER JOIN Cursos C ON C.id_curso=Cr.id_curso
+LEFT JOIN Instructores I ON I.id_instructor=Cr.id_instructor;
+```
+
 #### *Consultas en la Base de Datos*
 1. Agregue un campo Estado_Matrícula a la tabla Matrícula que indique si el
 estudiante se encuentra “En Ejecución”, “Terminado” o “Cancelado”.
@@ -122,12 +138,12 @@ ADD Duración int NOT NULL;
 ```
 4. Seleccionar los nombres y edades de aprendices que están cursando la carrera de electrónica.
 ```sql
-SELECT A.nombre, A.apellido, A.edad  FROM Aprendices A INNER JOIN Matricula M ON A.id_aprendiz=M.id_aprendiz WHERE M.id_ruta IN (SELECT id_ruta FROM Rutas WHERE id_carrera=2);
+SELECT CONCAT(A.nombre, ' ', A.apellido), A.edad  FROM Aprendices A INNER JOIN Matricula M ON A.id_aprendiz=M.id_aprendiz WHERE M.id_ruta IN (SELECT id_ruta FROM Rutas WHERE id_carrera=2);
 ```
 
 5. Seleccionar Nombres de Aprendices junto al nombre de la ruta de aprendizaje que cancelaron.
 ```sql
-SELECT A.nombre, A.apellido, A.edad, R.ruta FROM Aprendices A JOIN Matricula M ON M.id_aprendiz=A.id_aprendiz JOIN Rutas R ON M.id_ruta=R.id_ruta WHERE M.estado='Cancelado';
+SELECT CONCAT(A.nombre, ' ', A.apellido) AS Aprendiz, A.edad, R.ruta AS Ruta_Cancelada FROM Aprendices A JOIN Matricula M ON M.id_aprendiz=A.id_aprendiz JOIN Rutas R ON M.id_ruta=R.id_ruta WHERE M.estado='Cancelado';
 ```
 
 6. Seleccionar Nombre de los cursos que no tienen un instructor asignado.
@@ -154,8 +170,10 @@ SELECT CONCAT(A.nombre, ' ', A.apellido) AS Aprendiz FROM Aprendices A INNER JOI
 ```sql
 SELECT I.instructor AS Instructores_sin_Cursos FROM Instructores I LEFT JOIN Cursos_Ruta CR ON I.id_instructor=CR.id_instructor WHERE CR.id_instructor IS NULL;
 ```
-
+---
 #### *Banco de Preguntas SQL*
+A continuación se presentan 4 preguntas de selección multiple referentes al tema de bases de datos relacionales SQL, con sus respectivas respuestas.
+
 * Si tienes una tabla llamada "Empleados" con columnas como "ID", "Nombre", y "Salario", ¿cuál sería la consulta SQL para seleccionar todos los empleados que ganan más de $50,000?
 
         a) SELECT * FROM Empleados WHERE Salario > 50000;
