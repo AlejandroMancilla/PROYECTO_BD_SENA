@@ -138,7 +138,7 @@ ADD Duración int NOT NULL;
 ```
 4. Seleccionar los nombres y edades de aprendices que están cursando la carrera de electrónica.
 ```sql
-SELECT CONCAT(A.nombre, ' ', A.apellido), A.edad  FROM Aprendices A INNER JOIN Matricula M ON A.id_aprendiz=M.id_aprendiz WHERE M.id_ruta IN (SELECT id_ruta FROM Rutas WHERE id_carrera=2);
+SELECT CONCAT(A.nombre, ' ', A.apellido) AS APRENDIZ, A.edad  FROM Aprendices A INNER JOIN Matricula M ON A.id_aprendiz=M.id_aprendiz WHERE M.id_ruta IN (SELECT id_ruta FROM Rutas WHERE id_carrera=2) AND M.estado='Activo';
 ```
 
 5. Seleccionar Nombres de Aprendices junto al nombre de la ruta de aprendizaje que cancelaron.

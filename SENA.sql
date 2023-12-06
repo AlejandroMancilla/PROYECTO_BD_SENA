@@ -82,7 +82,7 @@ INSERT INTO Clase_Aprendiz VALUES (1,1), (1,2), (1,5), (1,3), (2,4), (2,2), (2,5
 
 --CONSULTAS EN LA BASE DE DATOS--
 --Punto 4
-SELECT CONCAT(A.nombre, ' ', A.apellido) AS APRENDIZ, A.edad  FROM Aprendices A INNER JOIN Matricula M ON A.id_aprendiz=M.id_aprendiz WHERE M.id_ruta IN (SELECT id_ruta FROM Rutas WHERE id_carrera=2);
+SELECT CONCAT(A.nombre, ' ', A.apellido) AS APRENDIZ, A.edad  FROM Aprendices A INNER JOIN Matricula M ON A.id_aprendiz=M.id_aprendiz WHERE M.id_ruta IN (SELECT id_ruta FROM Rutas WHERE id_carrera=2) AND M.estado='Activo';
 
 --Punto 5
 SELECT CONCAT(A.nombre, ' ', A.apellido) AS Aprendiz, A.edad, R.ruta AS Ruta_Cancelada FROM Aprendices A JOIN Matricula M ON M.id_aprendiz=A.id_aprendiz JOIN Rutas R ON M.id_ruta=R.id_ruta WHERE M.estado='Cancelado';
